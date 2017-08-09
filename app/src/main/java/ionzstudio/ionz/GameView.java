@@ -33,7 +33,10 @@ class GameView extends SurfaceView implements Runnable{
     public static float unit10;
 
     RectF game1;
+    RectF game2;
+
     int level=-1;
+
 
     public GameView(Context context, int x, int y) {
         super(context);
@@ -45,7 +48,8 @@ class GameView extends SurfaceView implements Runnable{
         max_y=y;
 
         unit10 = 10*(x+y)/2000;
-        game1=new RectF(unit10*5, unit10*5, unit10*25, unit10*25);
+        game1=new RectF(unit10*10, unit10*5, unit10*30, unit10*25);
+        game2=new RectF(x-unit10*10, unit10*5, x-unit10*30, unit10*25);
 
     }
     public void run() {
@@ -53,6 +57,10 @@ class GameView extends SurfaceView implements Runnable{
             switch(level){
                 case 1:
                     draw1();
+                    sleep();
+                    break;
+                case 2:
+                    draw2();
                     sleep();
                     break;
                 default:
@@ -67,17 +75,7 @@ class GameView extends SurfaceView implements Runnable{
         }
     }
 
-    private void draw1() {
-        if (surfaceHolder.getSurface().isValid()) {
 
-            canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
-            canvas.drawColor(Color.WHITE); //Just the background is now white
-
-
-            //Unlocking the canvas
-            surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
-        }
-    }
 
     private void update(){
     }
@@ -88,11 +86,8 @@ class GameView extends SurfaceView implements Runnable{
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
             canvas.drawColor(Color.RED); //Just the background is now white
             paint.setColor(Color.BLACK);
-            canvas.drawRect(unit10*5, unit10*5, unit10*25, unit10*25, paint);
-
-            paint.setColor(Color.YELLOW);
-            paint.setTextSize(unit10*5);
-            canvas.drawText("Game 1",unit10*10,unit10*25,paint);
+            canvas.drawRect(game1, paint);
+            canvas.drawRect(game2, paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
@@ -121,6 +116,9 @@ class GameView extends SurfaceView implements Runnable{
                 if (game1.contains(x,y)){
                     level=1;
                 }
+                if (game2.contains(x,y)){
+                    level=2;
+                }
                 break;
         }
         return true;
@@ -140,6 +138,32 @@ class GameView extends SurfaceView implements Runnable{
         playing = true; //resumed --> playing
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    //Level1
+    private void draw1() {
+        if (surfaceHolder.getSurface().isValid()) {
+
+            canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
+            canvas.drawColor(Color.WHITE); //Just the background is now white
+
+
+            //Unlocking the canvas
+            surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
+        }
+    }
+
+    //Level2
+    private void draw2() {
+        if (surfaceHolder.getSurface().isValid()) {
+
+            canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
+            canvas.drawColor(Color.CYAN); //Just the background is now white
+
+
+            //Unlocking the canvas
+            surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
+        }
     }
 
 }
