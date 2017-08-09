@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -98,6 +99,10 @@ class GameView extends SurfaceView implements Runnable{
         playing = true; //resumed --> playing
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void sayhi() {
+        Log.d("hi", "sayhi: ");
     }
 
 }
