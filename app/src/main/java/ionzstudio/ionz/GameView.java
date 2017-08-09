@@ -100,4 +100,5 @@ class GameView extends SurfaceView implements Runnable{
         gameThread = new Thread(this);
         gameThread.start();
     }
+
 }
