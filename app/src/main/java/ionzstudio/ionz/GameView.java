@@ -29,6 +29,8 @@ class GameView extends SurfaceView implements Runnable{
     private int max_x;
     private int max_y;
 
+    public static float unit10;
+
     public GameView(Context context, int x, int y) {
         super(context);
         mContext=context;
@@ -38,6 +40,9 @@ class GameView extends SurfaceView implements Runnable{
 
         max_x=x;// record max screen size
         max_y=y;
+
+        unit10 = 10*(x+y)/2000;
+
     }
     public void run() {
         while (playing) { //This is the main loop for the game
@@ -54,8 +59,8 @@ class GameView extends SurfaceView implements Runnable{
         if (surfaceHolder.getSurface().isValid()) {
 
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
-
-            canvas.drawColor(Color.BLUE); //Just the background is now white
+            canvas.drawColor(Color.RED); //Just the background is now white
+            canvas.drawRect(unit10*5, unit10*5, unit10*25, unit10*25, paint);
 
 
             //Unlocking the canvas
