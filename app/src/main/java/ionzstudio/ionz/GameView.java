@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -31,37 +32,67 @@ class GameView extends SurfaceView implements Runnable{
 
     public static float unit10;
 
+    RectF game1;
+    int level=-1;
+
     public GameView(Context context, int x, int y) {
         super(context);
         mContext=context;
         surfaceHolder = getHolder(); //initialize things
         paint = new Paint();
 
-
         max_x=x;// record max screen size
         max_y=y;
 
         unit10 = 10*(x+y)/2000;
+        game1=new RectF(unit10*5, unit10*5, unit10*25, unit10*25);
 
     }
     public void run() {
         while (playing) { //This is the main loop for the game
-            update(); //Move all objects
+            switch(level){
+                case 1:
+                    draw1();
+                    sleep();
+                    break;
+                default:
+                    update(); //Move all objects
 
-            draw(); //Actually draw them
+                    draw(); //Actually draw them
 
-            sleep(); //pause for a few millisecs before starting next frame
+                    sleep(); //pause for a few millisecs before starting next frame
+                    break;
+            }
+
         }
     }
+
+    private void draw1() {
+        if (surfaceHolder.getSurface().isValid()) {
+
+            canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
+            canvas.drawColor(Color.WHITE); //Just the background is now white
+
+
+            //Unlocking the canvas
+            surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
+        }
+    }
+
     private void update(){
     }
+
     private void draw() {
         if (surfaceHolder.getSurface().isValid()) {
 
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
             canvas.drawColor(Color.RED); //Just the background is now white
+            paint.setColor(Color.BLACK);
             canvas.drawRect(unit10*5, unit10*5, unit10*25, unit10*25, paint);
 
+            paint.setColor(Color.YELLOW);
+            paint.setTextSize(unit10*5);
+            canvas.drawText("Game 1",unit10*10,unit10*25,paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
@@ -82,9 +113,14 @@ class GameView extends SurfaceView implements Runnable{
         int y = (int) motionEvent.getY();
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) { //a switch block for different ways they can touch
             case MotionEvent.ACTION_DOWN://just pressing down
+
+                break;
             case MotionEvent.ACTION_MOVE://dragging finger
                 break;
             case MotionEvent.ACTION_UP://letting go
+                if (game1.contains(x,y)){
+                    level=1;
+                }
                 break;
         }
         return true;
