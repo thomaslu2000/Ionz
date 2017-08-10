@@ -27,8 +27,8 @@ class GameView extends SurfaceView implements Runnable{
     private Canvas canvas; //Your painting canvas
     private SurfaceHolder surfaceHolder; //??? your easel? ??
 
-    private int max_x;
-    private int max_y;
+    public static int max_x;
+    public static int max_y;
 
     public static float unit10;
 
@@ -36,6 +36,8 @@ class GameView extends SurfaceView implements Runnable{
     RectF game2;
 
     int level=-1;
+
+    Atom hydrogen;
 
 
     public GameView(Context context, int x, int y) {
@@ -57,6 +59,7 @@ class GameView extends SurfaceView implements Runnable{
             switch(level){
                 case 1:
                     draw1();
+                    update1();
                     sleep();
                     break;
                 case 2:
@@ -115,6 +118,7 @@ class GameView extends SurfaceView implements Runnable{
             case MotionEvent.ACTION_UP://letting go
                 if (game1.contains(x,y)){
                     level=1;
+                    hydrogen = new Atom(x,y,1);
                 }
                 if (game2.contains(x,y)){
                     level=2;
@@ -147,10 +151,15 @@ class GameView extends SurfaceView implements Runnable{
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
             canvas.drawColor(Color.WHITE); //Just the background is now white
 
+            hydrogen.draw(canvas, paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
         }
+    }
+
+    private void update1() {
+        hydrogen.update();
     }
 
     //Level2
@@ -160,10 +169,11 @@ class GameView extends SurfaceView implements Runnable{
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
             canvas.drawColor(Color.CYAN); //Just the background is now white
 
-
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
         }
     }
 
 }
+
+
