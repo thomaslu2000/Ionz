@@ -1,5 +1,6 @@
 package ionzstudio.ionz;
 
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,4 +32,5 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         gameView.resume();
     }
+    int[] colors={Color.RED, Color.BLUE,Color.GREEN};
 }
