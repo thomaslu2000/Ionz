@@ -128,6 +128,7 @@ class GameView extends SurfaceView implements Runnable{
         return true;
     }
     //dd
+    //hi
 
     public void pause() {
         playing = false; //paused-->not playing
