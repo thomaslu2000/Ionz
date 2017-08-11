@@ -32,5 +32,4 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         gameView.resume();
     }
-    int[] colors={Color.RED, Color.BLUE,Color.GREEN};
 }
