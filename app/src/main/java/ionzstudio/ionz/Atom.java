@@ -8,21 +8,18 @@ import android.graphics.Paint;
  * Created by Toby on 8/9/17.
  */
 
-public class Atom {
+public class Atom extends Particle{
+
+    //Changes: Atom is now a part of the Particle class which has some other nice functions we can use in other classes
 
     private int atomicNum;
-    private int x;
-    private int y;
-    float vx = 4;
-    float vy = 4;
-    float radius = 35;
-    private int color;
 
     public Atom(int xx, int yy, int num) {
-        x = xx;
-        y = yy;
+        super(xx,yy,35); //xx is x coordinate, yy, is y coordinate, 35 is radius
         color = colors[num - 1];
         atomicNum = num;
+        vx=4;
+        vy=4;
     }
     public void draw(Canvas canvas, Paint paint){
         paint.setColor(Color.RED);
