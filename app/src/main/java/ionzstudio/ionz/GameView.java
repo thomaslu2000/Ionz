@@ -68,13 +68,12 @@ class GameView extends SurfaceView implements Runnable{
                     break;
                 case 2:
                     draw2();
+                    update2();
                     sleep();
                     break;
                 default:
                     update(); //Move all objects
-
                     draw(); //Actually draw them
-
                     sleep(); //pause for a few millisecs before starting next frame
                     break;
             }
@@ -111,30 +110,35 @@ class GameView extends SurfaceView implements Runnable{
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) { //These are the touch sensores
-        int x = (int) motionEvent.getX(); //These get the touch locations
-        int y = (int) motionEvent.getY();
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) { //a switch block for different ways they can touch
-            case MotionEvent.ACTION_DOWN://just pressing down
+        switch(level){
+            case 2: touch2(motionEvent); break;
+            default:
+                int x = (int) motionEvent.getX(); //These get the touch locations
+                int y = (int) motionEvent.getY();
+                switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) { //a switch block for different ways they can touch
+                    case MotionEvent.ACTION_DOWN://just pressing down
 
-                break;
-            case MotionEvent.ACTION_MOVE://dragging finger
-                break;
-            case MotionEvent.ACTION_UP://letting go
-                if (!inGame) {
-                    if (game1.contains(x, y)) {
-                        level = 1;
-                        hydrogen = new Atom(x, y, 1);
-                        inGame=true;
-                    }
-                    if (game2.contains(x, y)) {
-                        level = 2;
-                        inGame=true;
-                        nucleus=new Nucleus(800,1000);
-                        for(int i = 0; i<60; i++) nucleus.addNucleon(rand.nextInt(2));
+                        break;
+                    case MotionEvent.ACTION_MOVE://dragging finger
+                        break;
+                    case MotionEvent.ACTION_UP://letting go
+                        if (!inGame) {
+                            if (game1.contains(x, y)) {
+                                level = 1;
+                                hydrogen = new Atom(x, y, 1);
+                                inGame=true;
+                            }
+                            if (game2.contains(x, y)) {
+                                level = 2;
+                                inGame=true;
+                                nucleus=new Nucleus(800,1000);
+                                hydrogen = new Atom(x, y, 1);
+                                for(int i = 0; i<60; i++) nucleus.addNucleon(rand.nextInt(2));
 
-                    }
+                            }
+                        }
+                        break;
                 }
-                break;
         }
         return true;
     }
@@ -182,11 +186,28 @@ class GameView extends SurfaceView implements Runnable{
         if (surfaceHolder.getSurface().isValid()) {
 
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
-            canvas.drawColor(Color.CYAN); //Just the background is now white
+            canvas.drawColor(Color.WHITE); //Just the background is now white
             nucleus.draw(canvas,paint);
+            hydrogen.draw(canvas,paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
+        }
+    }
+    private void update2(){
+        hydrogen.update();
+    }
+    private void touch2(MotionEvent motionEvent) {
+        int x = (int) motionEvent.getX(); //These get the touch locations
+        int y = (int) motionEvent.getY();
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) { //a switch block for different ways they can touch
+            case MotionEvent.ACTION_DOWN://just pressing down
+                break;
+            case MotionEvent.ACTION_MOVE://dragging finger
+                break;
+            case MotionEvent.ACTION_UP://letting go
+                nucleus.removeNucleon(2,2);
+                break;
         }
     }
 
