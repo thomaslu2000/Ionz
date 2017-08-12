@@ -12,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
+
 /**
  * Created by Thomas on 8/9/2017.
  */
@@ -25,12 +27,13 @@ class GameView extends SurfaceView implements Runnable{
 
     private Paint paint; //Pretty much your paint brush
     private Canvas canvas; //Your painting canvas
-    private SurfaceHolder surfaceHolder; //??? your easel? ??
+    private SurfaceHolder surfaceHolder;
 
     public static int max_x;
     public static int max_y;
 
     public static float unit10;
+    public boolean inGame;
 
     RectF game1;
     RectF game2;
@@ -39,6 +42,7 @@ class GameView extends SurfaceView implements Runnable{
 
     Atom hydrogen;
 
+    public static Random rand = new Random();
 
     public GameView(Context context, int x, int y) {
         super(context);
@@ -51,7 +55,7 @@ class GameView extends SurfaceView implements Runnable{
 
         unit10 = 10*(x+y)/2000;
         game1=new RectF(unit10*10, unit10*5, unit10*30, unit10*25);
-        game2=new RectF(x-unit10*10, unit10*5, x-unit10*30, unit10*25);
+        game2=new RectF(x-unit10*30, unit10*5, x-unit10*10, unit10*25);
 
     }
     public void run() {
@@ -116,12 +120,19 @@ class GameView extends SurfaceView implements Runnable{
             case MotionEvent.ACTION_MOVE://dragging finger
                 break;
             case MotionEvent.ACTION_UP://letting go
-                if (game1.contains(x,y)){
-                    level=1;
-                    hydrogen = new Atom(x,y,1);
-                }
-                if (game2.contains(x,y)){
-                    level=2;
+                if (!inGame) {
+                    if (game1.contains(x, y)) {
+                        level = 1;
+                        hydrogen = new Atom(x, y, 1);
+                        inGame=true;
+                    }
+                    if (game2.contains(x, y)) {
+                        level = 2;
+                        inGame=true;
+                        nucleus=new Nucleus(800,1000);
+                        for(int i = 0; i<60; i++) nucleus.addNucleon(rand.nextInt(2));
+
+                    }
                 }
                 break;
         }
@@ -164,11 +175,15 @@ class GameView extends SurfaceView implements Runnable{
     }
 
     //Level2
+
+    Nucleus nucleus;
+
     private void draw2() {
         if (surfaceHolder.getSurface().isValid()) {
 
             canvas = surfaceHolder.lockCanvas(); //You have to do this whenever you want to draw
             canvas.drawColor(Color.CYAN); //Just the background is now white
+            nucleus.draw(canvas,paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
