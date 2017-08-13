@@ -31,6 +31,7 @@ class GameView extends SurfaceView implements Runnable{
 
     public static int max_x;
     public static int max_y;
+    public static RectF gameScreen;
 
     public static float unit10;
     public boolean inGame;
@@ -52,6 +53,8 @@ class GameView extends SurfaceView implements Runnable{
 
         max_x=x;// record max screen size
         max_y=y;
+
+        gameScreen= new RectF(0,0,max_x,max_y);
 
         unit10 = 10*(x+y)/2000;
         game1=new RectF(unit10*10, unit10*5, unit10*30, unit10*25);
@@ -134,7 +137,6 @@ class GameView extends SurfaceView implements Runnable{
                                 nucleus=new Nucleus(max_x/2,max_y/4);
                                 hydrogen = new Atom(x, y, 1);
                                 for(int i = 0; i<60; i++) nucleus.addNucleon(rand.nextInt(2));
-
                             }
                         }
                         break;
@@ -199,6 +201,7 @@ class GameView extends SurfaceView implements Runnable{
     }
     private void update2(){
         hydrogen.update();
+        nucleus.update();
     }
     private void touch2(MotionEvent motionEvent) {
         int x = (int) motionEvent.getX(); //These get the touch locations
@@ -221,8 +224,7 @@ class GameView extends SurfaceView implements Runnable{
                             nucleus.addNucleon(1);
                         } else{
                             //b+
-                            nucleus.removeNucleon(0,1);
-                            nucleus.addNucleon(0);
+                            nucleus.bplus();
                         }
                     } else{
                         if (yy>0){
@@ -230,8 +232,9 @@ class GameView extends SurfaceView implements Runnable{
                             nucleus.removeNucleon(2,2);
                         }else{
                             //b-
-                            nucleus.removeNucleon(1,0);
-                            nucleus.addNucleon(1);
+                            nucleus.bminus();
+                            /*nucleus.removeNucleon(1,0);
+                            nucleus.addNucleon(1);*/
                         }
                     }
                 }
@@ -248,6 +251,13 @@ class GameView extends SurfaceView implements Runnable{
         canvas.drawText("β+",circCoord[0]+300,circCoord[1]-225,paint);
         canvas.drawText("α",circCoord[0]-300,circCoord[1]+300,paint);
         canvas.drawText("e-",circCoord[0]+300,circCoord[1]+300,paint);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(10);
+        canvas.drawLine(circCoord[0]-500,circCoord[1],circCoord[0]+500,circCoord[1],paint);
+        canvas.drawLine(circCoord[0],circCoord[1]-500,circCoord[0],circCoord[1]+500,paint);
+    }
+    public static int get1orNeg1(){
+        return (rand.nextInt(2)==0?1:-1);
     }
 
 }
