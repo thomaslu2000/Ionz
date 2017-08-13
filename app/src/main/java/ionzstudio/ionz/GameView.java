@@ -131,7 +131,7 @@ class GameView extends SurfaceView implements Runnable{
                             if (game2.contains(x, y)) {
                                 level = 2;
                                 inGame=true;
-                                nucleus=new Nucleus(800,1000);
+                                nucleus=new Nucleus(max_x/2,max_y/4);
                                 hydrogen = new Atom(x, y, 1);
                                 for(int i = 0; i<60; i++) nucleus.addNucleon(rand.nextInt(2));
 
@@ -181,6 +181,8 @@ class GameView extends SurfaceView implements Runnable{
     //Level2
 
     Nucleus nucleus;
+    private int[] circCoord = new int[2];
+    private boolean circOn=false;
 
     private void draw2() {
         if (surfaceHolder.getSurface().isValid()) {
@@ -189,6 +191,7 @@ class GameView extends SurfaceView implements Runnable{
             canvas.drawColor(Color.WHITE); //Just the background is now white
             nucleus.draw(canvas,paint);
             hydrogen.draw(canvas,paint);
+            if (circOn)drawMenu();
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas); //When you finished drawing the frame, you have to do this to save the changes
@@ -202,13 +205,49 @@ class GameView extends SurfaceView implements Runnable{
         int y = (int) motionEvent.getY();
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) { //a switch block for different ways they can touch
             case MotionEvent.ACTION_DOWN://just pressing down
+                circOn=true;
+                circCoord[0]=x;circCoord[1]=y;
                 break;
             case MotionEvent.ACTION_MOVE://dragging finger
                 break;
             case MotionEvent.ACTION_UP://letting go
-                nucleus.removeNucleon(2,2);
+                circOn=false;
+                int xx = x-circCoord[0]; int yy = y-circCoord[1];
+                if (Math.sqrt(xx*xx+yy*yy)>200){
+                    if (xx>0){
+                        if (yy>0){
+                            //e-
+                            nucleus.removeNucleon(0,1);
+                            nucleus.addNucleon(1);
+                        } else{
+                            //b+
+                            nucleus.removeNucleon(0,1);
+                            nucleus.addNucleon(0);
+                        }
+                    } else{
+                        if (yy>0){
+                            //a
+                            nucleus.removeNucleon(2,2);
+                        }else{
+                            //b-
+                            nucleus.removeNucleon(1,0);
+                            nucleus.addNucleon(1);
+                        }
+                    }
+                }
+
                 break;
         }
+    }
+    private void drawMenu(){
+        paint.setARGB(25,135,250,255);
+        canvas.drawCircle(circCoord[0],circCoord[1],200,paint);
+        paint.setARGB(150,255,167,35);
+        paint.setTextSize(300);
+        canvas.drawText("β-",circCoord[0]-250,circCoord[1]-225,paint);
+        canvas.drawText("β+",circCoord[0]+300,circCoord[1]-225,paint);
+        canvas.drawText("α",circCoord[0]-300,circCoord[1]+300,paint);
+        canvas.drawText("e-",circCoord[0]+300,circCoord[1]+300,paint);
     }
 
 }

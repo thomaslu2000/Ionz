@@ -31,8 +31,8 @@ public class Nucleus {
     }
 
     public void addNucleon(int typeOfNucleon){ //Takes in 0 or 1. 1.5*Proton radius for this radius multiplier
-        n+=1;
-        if (n<17) radius = (float) Math.sqrt(n)*75;
+        n++;
+        if (n<26) radius = (float) Math.sqrt(n)*60;
         float dis = radius*GameView.rand.nextFloat();
         float angle = 6.284f*GameView.rand.nextFloat();
         (typeOfNucleon==0 ? neutrons : protons).add(new Subatomic((int) (x+dis*Math.cos(angle)),(int) (y+dis*Math.sin(angle)),typeOfNucleon));
@@ -40,5 +40,11 @@ public class Nucleus {
     public void removeNucleon(int numOfNeutronsToRemove, int numOfProtonsToRemove){
         for (int i = 0;i<numOfNeutronsToRemove;i++) if(neutrons.size()>0) neutrons.remove(neutrons.size()-1);
         for (int i = 0;i<numOfProtonsToRemove;i++) if(protons.size()>0) protons.remove(protons.size()-1);
+        n=neutrons.size()+protons.size();
+        if (n<26) radius = (float) Math.sqrt(n)*60;
+        System.out.println(n);
+    }
+    public void bminus(){
+
     }
 }
