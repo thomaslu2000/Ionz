@@ -11,6 +11,7 @@ public class Nucleus {
     int y;
     float radius;
     int n;
+    int alphaCounter=-1;
     ArrayList<Subatomic> protons = new ArrayList<>();
     ArrayList<Subatomic> neutrons = new ArrayList<>();
     ArrayList<Subatomic> transforming = new ArrayList<>();
@@ -33,8 +34,13 @@ public class Nucleus {
         }
         for (int i = 0; i<moving.size();i++){
             moving.get(i).update();
-            if (!GameView.gameScreen.contains(moving.get(i).getX(),moving.get(i).getY())) moving.remove(i);
+            if (moving.get(i).getSwitchToNeutrons()){
+                moving.get(i).setSwitchToNeutrons(false);
+                neutrons.add(moving.get(i));
+                moving.remove(i);
+            }else if (!GameView.gameScreen.contains(moving.get(i).getX(),moving.get(i).getY())){ moving.remove(i);}
         }
+        if (alphaCounter==8) alphaAction();
     }
     public void draw(Canvas canvas, Paint paint){
         paint.setColor(Color.BLACK);
@@ -46,7 +52,14 @@ public class Nucleus {
             if (protons.size()>i){ protons.get(i).draw(canvas,paint);}
         }
         for (Subatomic a: transforming) a.draw(canvas,paint);
-        for (Subatomic a: moving) a.draw(canvas,paint);
+        for (int i = 0; i<moving.size();i++) moving.get(i).draw(canvas,paint);
+
+        if (alphaCounter>=0){
+            paint.setColor(Color.rgb(255,112,45));
+            if (alphaCounter<10)paint.setAlpha(25*alphaCounter);
+            canvas.drawCircle(x,y,radius*(20-alphaCounter)/10,paint);
+            alphaCounter--; //this is here instead of update
+        }
     }
 
     public void addNucleon(int typeOfNucleon){ //Takes in 0 or 1. 1.5*Proton radius for this radius multiplier
@@ -70,10 +83,31 @@ public class Nucleus {
         transforming.get(transforming.size()-1).transform();
     }
     public void bminus(){
-        bGeneric(neutrons,2);
+        if (neutrons.size()>0) bGeneric(neutrons,2);
     }
     public void bplus() {
-        bGeneric(protons,3);
-        System.out.println(protons.size()+"  "+neutrons.size()+"  "+transforming.size()+"  "+moving.size());
+        if (protons.size()>0) bGeneric(protons,3);
+    }
+    public void alpha(){
+        if (protons.size()>1 && neutrons.size()>1) alphaCounter=12;
+    }
+    public void alphaAction(){
+        removeNucleon(2,2);
+        moving.add(new Subatomic(x-50,y,1));
+        moving.add(new Subatomic(x+50,y,1));
+        moving.add(new Subatomic(x,y-50,0));
+        moving.add(new Subatomic(x,y+50,0));
+        float alphaVel = 5+GameView.rand.nextInt(45);
+        float alphaAngle = 6.284f*GameView.rand.nextFloat();
+        for (int i=1;i<=4;i++){
+            moving.get(moving.size()-i).setVelocity(alphaVel*(float)Math.cos(alphaAngle),alphaVel*(float)Math.sin(alphaAngle));
+        }
+    }
+    public void eCapture(){
+        if (protons.size()>0) {
+            moving.add(protons.get(protons.size() - 1));
+            protons.remove(protons.size() - 1);
+            moving.get(moving.size() - 1).eCapture();
+        }
     }
 }

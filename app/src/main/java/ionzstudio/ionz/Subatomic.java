@@ -17,6 +17,8 @@ public class Subatomic extends Particle{
     int transformationTimer;
     int transformType;
     final int transformationInt = 20;
+    boolean eCapOn=false;
+    boolean switchToNeutrons=false;
     public Subatomic(int xx, int yy, int type) {
         super(xx,yy, type<2?50:25);
         textOffset=0.65f*radius;
@@ -31,6 +33,16 @@ public class Subatomic extends Particle{
         if (transformationTimer>0){
             transformationTimer--;
         }
+        if (eCapOn){
+            eCapElectron.update();
+            if (touchesParticle(eCapElectron)){
+                eCapOn=false;
+                eCapElectron=null;
+                type=0;
+                setColor();
+                switchToNeutrons=true;
+            }
+        }
     }
     public void draw(Canvas canvas, Paint paint){
         if (transformationTimer>0){
@@ -40,6 +52,11 @@ public class Subatomic extends Particle{
             canvas.drawCircle(x,y,radius,paint);
 
         } else {
+            if (eCapOn){
+                paint.setARGB(150,130,255,112);
+                canvas.drawCircle(x,y,radius*1.2f,paint);
+                eCapElectron.draw(canvas,paint);
+            }
             paint.setColor(color);
             canvas.drawCircle(x, y, radius, paint);
             if (type != 0) {
@@ -67,4 +84,14 @@ public class Subatomic extends Particle{
     public int getType(){return type;}
     public void setTransformType(int n){transformType=n;}
     public int getTransformType(){return transformType;}
+
+    Subatomic eCapElectron;
+    public void eCapture(){
+        eCapOn=true;
+        eCapElectron=new Subatomic((GameView.rand.nextInt(2)==1?0-50:GameView.max_x+50),GameView.rand.nextInt(GameView.max_y),2);
+        float electronAngle = (float) Math.atan2(y-eCapElectron.getY(),x-eCapElectron.getX());
+        eCapElectron.setVelocity(80*(float)Math.cos(electronAngle),80*(float)Math.sin(electronAngle));
+    }
+    public void setSwitchToNeutrons(boolean f){switchToNeutrons=f;}
+    public boolean getSwitchToNeutrons(){return switchToNeutrons;}
 }

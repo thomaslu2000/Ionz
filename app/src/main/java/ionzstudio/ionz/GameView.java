@@ -54,7 +54,7 @@ class GameView extends SurfaceView implements Runnable{
         max_x=x;// record max screen size
         max_y=y;
 
-        gameScreen= new RectF(0,0,max_x,max_y);
+        gameScreen= new RectF(-50,-50,max_x+50,max_y+50);
 
         unit10 = 10*(x+y)/2000;
         game1=new RectF(unit10*10, unit10*5, unit10*30, unit10*25);
@@ -220,8 +220,7 @@ class GameView extends SurfaceView implements Runnable{
                     if (xx>0){
                         if (yy>0){
                             //e-
-                            nucleus.removeNucleon(0,1);
-                            nucleus.addNucleon(1);
+                            nucleus.eCapture();
                         } else{
                             //b+
                             nucleus.bplus();
@@ -229,12 +228,10 @@ class GameView extends SurfaceView implements Runnable{
                     } else{
                         if (yy>0){
                             //a
-                            nucleus.removeNucleon(2,2);
+                            nucleus.alpha();
                         }else{
                             //b-
                             nucleus.bminus();
-                            /*nucleus.removeNucleon(1,0);
-                            nucleus.addNucleon(1);*/
                         }
                     }
                 }

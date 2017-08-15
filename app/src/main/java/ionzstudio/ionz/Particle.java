@@ -32,6 +32,6 @@ public class Particle {
         int dY = p.getY()-y;
         return Math.sqrt(dX*dX+dY*dY)<=radius+p.getRadius();
     }
-    public void setVelocity(int velX, int velY){vx=velX;vy=velY;}
+    public void setVelocity(float velX, float velY){vx=velX;vy=velY;}
 
 }
