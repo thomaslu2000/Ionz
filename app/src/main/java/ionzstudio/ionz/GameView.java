@@ -217,22 +217,17 @@ class GameView extends SurfaceView implements Runnable{
                 circOn=false;
                 int xx = x-circCoord[0]; int yy = y-circCoord[1];
                 if (Math.sqrt(xx*xx+yy*yy)>200){
-                    if (xx>0){
-                        if (yy>0){
-                            //e-
-                            nucleus.eCapture();
-                        } else{
-                            //b+
-                            nucleus.bplus();
-                        }
-                    } else{
-                        if (yy>0){
-                            //a
-                            nucleus.alpha();
-                        }else{
-                            //b-
-                            nucleus.bminus();
-                        }
+                    float angle = (float) Math.atan2(yy,xx);
+                    if (0.31416<=angle && angle<1.5708){//p+
+                        nucleus.pCapture();
+                    } else if(1.508<=angle && angle < 2.8243){//e-
+                        nucleus.eCapture();
+                    } else if(-2.19911<=angle && angle<-0.94247){//a
+                        nucleus.alpha();
+                    } else if (Math.abs(angle)>1.5){ //b-
+                        nucleus.bminus();
+                    } else{//b+
+                        nucleus.bplus();
                     }
                 }
 
@@ -243,15 +238,18 @@ class GameView extends SurfaceView implements Runnable{
         paint.setARGB(25,135,250,255);
         canvas.drawCircle(circCoord[0],circCoord[1],200,paint);
         paint.setARGB(150,255,167,35);
-        paint.setTextSize(300);
-        canvas.drawText("β-",circCoord[0]-250,circCoord[1]-225,paint);
-        canvas.drawText("β+",circCoord[0]+300,circCoord[1]-225,paint);
-        canvas.drawText("α",circCoord[0]-300,circCoord[1]+300,paint);
-        canvas.drawText("e-",circCoord[0]+300,circCoord[1]+300,paint);
+        paint.setTextSize(300); //cw, a at top: a,b+,pCap,eCap,b-
+        canvas.drawText("α",circCoord[0],circCoord[1]-300,paint);
+        canvas.drawText("β+",circCoord[0]+350,circCoord[1]-100,paint);
+        canvas.drawText("p+",circCoord[0]+200,circCoord[1]+300,paint);
+        canvas.drawText("e-",circCoord[0]-200,circCoord[1]+300,paint);
+        canvas.drawText("β-",circCoord[0]-285,circCoord[1]-100,paint);
+
         paint.setColor(Color.BLACK);
         paint.setStrokeWidth(10);
-        canvas.drawLine(circCoord[0]-500,circCoord[1],circCoord[0]+500,circCoord[1],paint);
-        canvas.drawLine(circCoord[0],circCoord[1]-500,circCoord[0],circCoord[1]+500,paint);
+        for (double i = Math.PI/2;i<5*Math.PI/2;i+=2*Math.PI/5){
+            canvas.drawLine(circCoord[0],circCoord[1],(float) (circCoord[0]+500*Math.cos(i)),(float) (circCoord[1]+500*Math.sin(i)),paint);
+        }
     }
     public static int get1orNeg1(){
         return (rand.nextInt(2)==0?1:-1);

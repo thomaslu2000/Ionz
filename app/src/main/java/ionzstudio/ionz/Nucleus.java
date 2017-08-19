@@ -34,9 +34,9 @@ public class Nucleus {
         }
         for (int i = 0; i<moving.size();i++){
             moving.get(i).update();
-            if (moving.get(i).getSwitchToNeutrons()){
-                moving.get(i).setSwitchToNeutrons(false);
-                neutrons.add(moving.get(i));
+            if (moving.get(i).getSwitchSubatom()){
+                moving.get(i).setSwitchSubatom(false);
+                (moving.get(i).getType()==0?neutrons:protons).add(moving.get(i));
                 moving.remove(i);
             }else if (!GameView.gameScreen.contains(moving.get(i).getX(),moving.get(i).getY())){ moving.remove(i);}
         }
@@ -107,7 +107,14 @@ public class Nucleus {
         if (protons.size()>0) {
             moving.add(protons.get(protons.size() - 1));
             protons.remove(protons.size() - 1);
-            moving.get(moving.size() - 1).eCapture();
+            moving.get(moving.size() - 1).eCapture(2);
+        }
+    }
+    public void pCapture(){
+        if(neutrons.size()>0) {
+            moving.add(neutrons.get(neutrons.size()-1));
+            neutrons.remove(neutrons.size() -1);
+            moving.get(moving.size() - 1).eCapture(3);
         }
     }
 }

@@ -18,7 +18,7 @@ public class Subatomic extends Particle{
     int transformType;
     final int transformationInt = 20;
     boolean eCapOn=false;
-    boolean switchToNeutrons=false;
+    boolean switchSubatom=false;
     public Subatomic(int xx, int yy, int type) {
         super(xx,yy, type<2?50:25);
         textOffset=0.65f*radius;
@@ -38,9 +38,9 @@ public class Subatomic extends Particle{
             if (touchesParticle(eCapElectron)){
                 eCapOn=false;
                 eCapElectron=null;
-                type=0;
+                type=1-type;
                 setColor();
-                switchToNeutrons=true;
+                switchSubatom=true;
             }
         }
     }
@@ -86,12 +86,12 @@ public class Subatomic extends Particle{
     public int getTransformType(){return transformType;}
 
     Subatomic eCapElectron;
-    public void eCapture(){
+    public void eCapture(int n){
         eCapOn=true;
-        eCapElectron=new Subatomic((GameView.rand.nextInt(2)==1?0-50:GameView.max_x+50),GameView.rand.nextInt(GameView.max_y),2);
+        eCapElectron=new Subatomic((GameView.rand.nextInt(2)==1?0-50:GameView.max_x+50),GameView.rand.nextInt(GameView.max_y),n);
         float electronAngle = (float) Math.atan2(y-eCapElectron.getY(),x-eCapElectron.getX());
         eCapElectron.setVelocity(80*(float)Math.cos(electronAngle),80*(float)Math.sin(electronAngle));
     }
-    public void setSwitchToNeutrons(boolean f){switchToNeutrons=f;}
-    public boolean getSwitchToNeutrons(){return switchToNeutrons;}
+    public void setSwitchSubatom(boolean f){switchSubatom=f;}
+    public boolean getSwitchSubatom(){return switchSubatom;}
 }
